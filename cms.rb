@@ -3,5 +3,7 @@ require 'sinatra/reloader'
 require 'tilt/erubi'
 
 get '/' do
-  'Getting started.'
+  @files = Dir.new('data').children.sort
+  
+  erb :index
 end
