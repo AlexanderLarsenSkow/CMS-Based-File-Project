@@ -17,23 +17,27 @@ class CMSTest < Minitest::Test
     assert_equal 200, last_response.status
     assert_equal 'text/html;charset=utf-8', last_response['Content-Type']
 
-    assert_includes last_response.body, "/about.txt"
+    assert_includes last_response.body, "/about.md"
     assert_includes last_response.body, "/changes.txt"
     assert_includes last_response.body, "/history.txt"
   end
 
   def test_about
-    get '/about.txt'
+    get '/about.md'
     assert_equal 200, last_response.status
-    assert_equal 'text/plain', last_response['Content-Type']
+    assert_equal 'text/html;charset=utf-8', last_response['Content-Type']
   
-    message = 'Ruby is primarily a backend programming language'
+    header = 'Ruby is...'
+    body = 'primarily a backend programming language'
      
-    assert_includes last_response.body, message
+    assert_includes last_response.body, body
+    assert_includes last_response.body, header
   end
 
   def test_changes
     get '/changes.txt'
+
+    assert_equal 'text/plain', last_response['Content-Type']
     message = 'Ruby has had so many changes over the years'
 
     assert_includes last_response.body, message
