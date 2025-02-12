@@ -1,6 +1,10 @@
 <h1>Our CMS Files</h1>
 <ul>
 	<% @files.each do |file| %>
-		<li><a href = "/<%= file %>"><%= file %></li></a>
+		<li>
+			<h4><a href = "/<%= file %>"><%= file %></a></h4>
+			<a href = "/<%= file %>/edit">Edit File</a>
+			<br><br>
+		</li>
 	<% end %>
 </ul>

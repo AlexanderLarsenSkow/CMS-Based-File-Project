@@ -1,0 +1,7 @@
+<h2>Edit Contents of <%= @file_name %></h2>
+<form action = '/<%= @file_name %>' method = 'post'>
+	<label>Make Edits Here:</label>
+	<br><br>
+		<textarea name = "edit" cols = "70" rows = "30" value = "Edit Here"><%= @content %></textarea>
+		<button type = "submit">Save Changes</button>
+</form>

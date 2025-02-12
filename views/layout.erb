@@ -1,4 +1,3 @@
-<% if session[:error] %>
-	<p><%= session.delete(:error) %></p>
-<% end %>
+<%= flash_message(:error) %>
+<%= flash_message(:success) %>
 <%= yield %>	
