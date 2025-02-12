@@ -1,6 +1,7 @@
 require 'sinatra'
 require 'sinatra/reloader'
 require 'tilt/erubi'
+require 'redcarpet'
 
 root = File.expand_path("..", __FILE__)
 
@@ -10,11 +11,12 @@ configure do
 end
 
 before do
+  @markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML)
 	@files = Dir.glob(root + '/data/*')
 end
 
 get '/' do
-	@files = @files.map { |path| File.basename(path) }	
+	@files = @files.map { |path| File.basename(path) }
   erb :index
 end
 
@@ -26,7 +28,7 @@ get '/:file_name' do
 	file_name = params[:file_name]
 	file_path = root + '/data/' + file_name
 
-  if !@files.include? file_name
+  if !@files.include? file_path
     session[:error] = "Sorry, that file doesn't exist."
     redirect '/'
   end
