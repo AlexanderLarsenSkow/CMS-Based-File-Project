@@ -45,4 +45,14 @@ class CMSTest < Minitest::Test
     
     assert_includes last_response.body, message
   end
+
+  def test_bad_route
+    get '/about.tx'
+    error = "Sorry, that file doesn't exist."
+    assert_equal 302, last_response.status
+
+    follow_redirect!
+    assert_equal 200, last_response.status
+    assert_includes last_response.body, error
+  end
 end
