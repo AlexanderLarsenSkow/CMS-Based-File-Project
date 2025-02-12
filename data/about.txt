@@ -1,1 +1,0 @@
-Ruby is primarily a backend programming language with special syntax meant to make it more readable.
