@@ -1,10 +1,4 @@
-<header>
-	<h1>Our CMS Files</h1>
-</header>
-
-<body>
-	<% if session[:error] %>
-		<p><%= session.delete(:error) %></p>
-	<% end %>
-	<%= yield %>
-</body>	
+<% if session[:error] %>
+	<p><%= session.delete(:error) %></p>
+<% end %>
+<%= yield %>	
