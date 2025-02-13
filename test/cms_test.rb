@@ -130,10 +130,17 @@ class CMSTest < Minitest::Test
 
     get '/new.txt'
     assert_equal 200, last_response.status
+  end
 
+  def test_create_error
     post '/create', document: ''
 
     assert_equal 422, last_response.status
     assert_includes last_response.body, 'A name is required.'
+
+    post '/create', document: 'asdf'
+
+    assert_equal 422, last_response.status
+    assert_includes last_response.body, 'Include an extname'
   end
 end
