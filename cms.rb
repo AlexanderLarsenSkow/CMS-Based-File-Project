@@ -52,6 +52,26 @@ get '/' do
   erb :home
 end
 
+get '/new' do
+  erb :new
+end
+
+post '/create' do
+  file_name = params[:document].strip
+
+  if file_name.size == 0
+    session[:error] = 'A name is required.'
+    status 422
+    erb :new
+   
+  else
+    @new_file = File.new("#{data_path}/#{file_name}", 'w+')
+    session[:success] = "#{file_name} was created."
+    
+    redirect '/'
+  end
+end
+
 def set_up_file
   @file_name = params[:file_name]
   @file_path = File.join(data_path, @file_name)
