@@ -56,14 +56,27 @@ get '/new' do
   erb :new
 end
 
+def invalid_file?(file_name)
+  file_name.size == 0 || File.extname(file_name) == ''
+end
+
+def determine_create_error(file_name)
+  if file_name.size == 0
+    session[:error] = 'A name is required.'
+  
+  else
+    session[:error] = 'Include an extname (.txt, .md, etc.)'
+  end
+end
+
 post '/create' do
   file_name = params[:document].strip
 
-  if file_name.size == 0
-    session[:error] = 'A name is required.'
+  if invalid_file?(file_name)
+    determine_create_error(file_name)
     status 422
     erb :new
-   
+
   else
     @new_file = File.new("#{data_path}/#{file_name}", 'w+')
     session[:success] = "#{file_name} was created."
