@@ -116,3 +116,12 @@ post '/:file_name' do
   session[:success] = "#{@file_name} has successfully been edited."
   redirect '/'
 end
+
+post '/:file_name/delete' do
+	set_up_file
+
+	File.delete(@file_path)
+	session[:success] = "#{@file_name} has been deleted."
+
+	redirect '/'
+end

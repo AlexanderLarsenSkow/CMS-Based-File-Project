@@ -3,6 +3,10 @@ p.flash {
 	background-color: Gold
 }
 
+form.inline {
+	display: inline;
+}
+
 body {
 	padding: 1em;
 	font-family: sans-serif

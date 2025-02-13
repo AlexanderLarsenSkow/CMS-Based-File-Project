@@ -5,6 +5,12 @@
 			<h4><a href = "/<%= file %>"><%= file %></a></h4>
 			<a href = "/<%= file %>/edit">Edit File</a>
 			<br><br>
+			
+			<form class = "inline" action = "/<%= file %>/delete" method = "post">
+				<button type = 'submit'>Delete File</button>
+			</form>
+
+			<br>
 		</li>
 	<% end %>
 </ul>
