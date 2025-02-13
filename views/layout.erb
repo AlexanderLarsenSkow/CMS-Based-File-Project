@@ -1,3 +1,14 @@
-<%= flash_message(:error) %>
-<%= flash_message(:success) %>
-<%= yield %>	
+<!DOCTYPE html>
+<html>
+
+<head>
+	<link rel = "stylesheet" href = "/stylesheets/application.css?v=2">
+</head>
+
+	<body>
+		<%= flash_message(:error) %>
+		<%= flash_message(:success) %>
+
+		<%= yield %>
+	</body>
+</html>

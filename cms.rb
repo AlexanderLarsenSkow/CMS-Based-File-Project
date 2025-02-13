@@ -19,7 +19,7 @@ end
 helpers do
   def flash_message(name)
     if session[name]
-      "<p>#{session.delete(name)}</p>"
+      "<p class = 'flash'>#{session.delete(name)}</p>"
     end
   end
 end
@@ -37,7 +37,7 @@ def load_content(path)
     content
   
   when '.md'
-    render_markdown(content)
+    erb render_markdown(content)
   end
 end
 
