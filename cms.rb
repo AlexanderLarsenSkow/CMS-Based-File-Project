@@ -35,17 +35,6 @@ def load_content(path)
   end
 end
 
-def load_edits(content)
-  case File.extname(@file_name)
-  when '.txt'
-    headers['Content-Type'] = 'text/plain'
-    content
-
-  when '.md'
-    render_markdown(content)
-  end
-end
-
 before do
   @markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML)
 	@files = Dir.glob(ROOT + '/data/*')
@@ -67,12 +56,8 @@ end
 
 get '/:file_name' do
   set_up_file
-  
-  if session[@file_name]
-    content = session[@file_name]
-    load_edits(content)
 
-  elsif @files.include? @file_path
+  if @files.include? @file_path
     load_content(@file_path)
 
   else
@@ -83,15 +68,15 @@ end
 
 get '/:file_name/edit' do
   set_up_file
-  @content = session[@file_name] || File.read(@file_path)
+  @content = File.read(@file_path)
   erb :edit
 end
 
 post '/:file_name' do
   set_up_file
   edits = params[:edit]
+  File.write(@file_path, edits)
 
-  session[@file_name] = edits
   session[:success] = "#{@file_name} has successfully been edited."
   redirect '/'
 end
