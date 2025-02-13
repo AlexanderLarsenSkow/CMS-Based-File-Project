@@ -2,8 +2,15 @@ ENV['RACK_ENV'] = 'test'
 
 require 'minitest/autorun'
 require 'rack/test'
+require 'fileutils'
 
 require_relative '../cms'
+
+def create_document(name, content = '')
+	File.open(File.join(data_path, name), 'w') do |file|
+		file.write(content)
+	end
+end
 
 class CMSTest < Minitest::Test
   include Rack::Test::Methods
@@ -12,7 +19,19 @@ class CMSTest < Minitest::Test
     Sinatra::Application
   end
 
+	def setup
+		FileUtils.mkdir_p(data_path)
+	end
+
+	def teardown
+		FileUtils.rm_rf(data_path)
+	end
+
   def test_home
+		create_document 'about.md'
+		create_document 'changes.txt'
+		create_document 'history.txt'
+
     get '/'
     assert_equal 200, last_response.status
     assert_equal 'text/html;charset=utf-8', last_response['Content-Type']
@@ -23,29 +42,32 @@ class CMSTest < Minitest::Test
   end
 
   def test_about
+		create_document('about.md', 'Ruby is...')
+
     get '/about.md'
     assert_equal 200, last_response.status
     assert_equal 'text/html;charset=utf-8', last_response['Content-Type']
   
     header = 'Ruby is...'
-    body = 'primarily a backend programming language'
      
-    assert_includes last_response.body, body
     assert_includes last_response.body, header
   end
 
   def test_changes
+		message = 'Ruby has had so many changes'
+		create_document('changes.txt', message)
+
     get '/changes.txt'
 
     assert_equal 'text/plain', last_response['Content-Type']
-    message = 'Ruby has had so many changes over the years'
-
     assert_includes last_response.body, message
   end
 
   def test_history_file
+		message = '1996 - Ruby 1.0 released.'
+		create_document('history.txt', message)
+
     get '/history.txt'
-    message = '1996 - Ruby 1.0 released.'
     
     assert_includes last_response.body, message
   end
@@ -61,8 +83,10 @@ class CMSTest < Minitest::Test
   end
 
   def test_editing_document
-    get "/changes.txt/edit"
     initial_content = "Ruby has had so many changes over the years"
+		create_document('changes.txt', initial_content)
+
+    get "/changes.txt/edit"
 
     assert_equal 200, last_response.status
     assert_includes last_response.body, initial_content
@@ -71,10 +95,8 @@ class CMSTest < Minitest::Test
   end
   
   def test_updating_document
-		initial_content = <<~MESSAGE
-			Ruby has had so many changes over the years, it's impossible to keep track!
-			new content
-		MESSAGE
+		create_document('changes.txt', 'Ruby')
+		initial_content = 'has had so many changes'
 
     post "/changes.txt", edit: initial_content
     assert_equal 302, last_response.status
@@ -85,6 +107,6 @@ class CMSTest < Minitest::Test
 
     get "/changes.txt"
     assert_equal 200, last_response.status
-    assert_includes last_response.body, "new content"
+    assert_includes last_response.body, "so many changes"
   end
 end

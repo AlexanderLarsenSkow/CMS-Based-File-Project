@@ -3,11 +3,17 @@ require 'sinatra/reloader'
 require 'tilt/erubi'
 require 'redcarpet'
 
-ROOT = File.expand_path("..", __FILE__)
-
 configure do
   enable :sessions
   set :session_secret, SecureRandom.hex(32)
+end
+
+def data_path
+  if ENV["RACK_ENV"] == "test"
+    File.expand_path("../test/data", __FILE__)
+  else
+    File.expand_path("../data", __FILE__)
+  end
 end
 
 helpers do
@@ -37,7 +43,8 @@ end
 
 before do
   @markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML)
-	@files = Dir.glob(ROOT + '/data/*')
+  pattern = File.join(data_path, '*')
+	@files = Dir.glob(pattern)
 end
 
 get '/' do
@@ -51,7 +58,7 @@ end
 
 def set_up_file
   @file_name = params[:file_name]
-  @file_path = ROOT + '/data/' + @file_name
+  @file_path = File.join(data_path, @file_name)
 end
 
 get '/:file_name' do
