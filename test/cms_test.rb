@@ -59,4 +59,32 @@ class CMSTest < Minitest::Test
     assert_equal 200, last_response.status
     assert_includes last_response.body, error
   end
+
+  def test_editing_document
+    get "/changes.txt/edit"
+    initial_content = "Ruby has had so many changes over the years"
+
+    assert_equal 200, last_response.status
+    assert_includes last_response.body, initial_content
+    assert_includes last_response.body, '<textarea'
+    assert_includes last_response.body, %q(<button type = "submit")
+  end
+  
+  def test_updating_document
+		initial_content = <<~MESSAGE
+			Ruby has had so many changes over the years, it's impossible to keep track!
+			new content
+		MESSAGE
+
+    post "/changes.txt", edit: initial_content
+    assert_equal 302, last_response.status
+
+    get last_response["Location"]
+
+    assert_includes last_response.body, "changes.txt has successfully been edited"
+
+    get "/changes.txt"
+    assert_equal 200, last_response.status
+    assert_includes last_response.body, "new content"
+  end
 end
