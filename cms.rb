@@ -52,10 +52,6 @@ get '/' do
   erb :home
 end
 
-get '/favicon.ico' do
-  redirect '/'
-end
-
 def set_up_file
   @file_name = params[:file_name]
   @file_path = File.join(data_path, @file_name)
