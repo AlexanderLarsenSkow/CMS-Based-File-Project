@@ -109,4 +109,31 @@ class CMSTest < Minitest::Test
     assert_equal 200, last_response.status
     assert_includes last_response.body, "so many changes"
   end
+
+  def test_new_doc_route
+    get '/new'
+    assert_equal 200, last_response.status
+    assert_includes last_response.body, '<input'
+    assert_includes last_response.body, %q(button type = "submit")
+    assert_equal 'text/html;charset=utf-8', last_response['Content-Type']
+  end
+
+  def test_new_document
+    post '/create', document: 'new.txt'
+    assert_equal 302, last_response.status
+
+    follow_redirect!
+
+    assert_equal 200, last_response.status
+    assert_includes last_response.body, 'new.txt was created.'
+    assert_includes last_response.body, 'new.txt'
+
+    get '/new.txt'
+    assert_equal 200, last_response.status
+
+    post '/create', document: ''
+
+    assert_equal 422, last_response.status
+    assert_includes last_response.body, 'A name is required.'
+  end
 end
